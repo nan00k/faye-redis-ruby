@@ -137,9 +137,13 @@ module Faye
 
       json_message = MultiJson.dump(message)
       channels     = Channel.expand(message['channel'])
+      @server.debug ' channels: ?', channels
+
       keys         = channels.map { |c| @ns + "/channels#{c}" }
+      @server.debug ' keys: ?', keys
 
       @redis.sunion(*keys) do |clients|
+        @server.debug ' clients: ?', clients
         clients.each do |client_id|
           queue = @ns + "/clients/#{client_id}/messages"
 
